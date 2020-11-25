@@ -1,4 +1,4 @@
-package codes.naukkis.banksapi.restservice
+package codes.naukkis.banksapi.services
 
 import codes.naukkis.banksapi.config.Config
 import khttp.get
@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.RestController
 
 
 @RestController
-class AccountController(private val config: Config) {
+class OsuuspankkiAccountController(private val config: Config) {
     private val opUrlAccounts = "https://sandbox.apis.op-palvelut.fi/accounts"
     private val headers = mapOf("Accept" to "application/json",
             "Content-Type" to "application/json",
-            "x-api-key" to config.apiKey,
-            "Authorization" to config.staticAuth)
+            "x-api-key" to config.opApiKey,
+            "Authorization" to config.opStaticAuth)
 
     private val opPSD2url = "https://mtls-apis.psd2-sandbox.op.fi/accounts-psd2"
 
