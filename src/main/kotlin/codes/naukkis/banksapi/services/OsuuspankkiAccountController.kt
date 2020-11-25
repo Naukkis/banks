@@ -41,19 +41,5 @@ class OsuuspankkiAccountController(private val config: Config) {
         return r.content
     }
 
-    @GetMapping("/accounts-psd2")
-    fun accountsPsd2(@RequestParam accountId: String): ByteArray {
-        val r = get("${opPSD2url}/v1/accounts/${accountId}",
-                headers = headers)
 
-        return r.content
-    }
-
-    @GetMapping("/accounts-psd2all")
-    fun accountsPsd2All(): ByteArray {
-        val r = get("${opPSD2url}/v1/accounts/",
-                headers = headers)
-
-        return r.content
-    }
 }

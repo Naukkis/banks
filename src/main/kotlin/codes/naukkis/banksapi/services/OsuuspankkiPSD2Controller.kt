@@ -12,8 +12,6 @@ import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
-import java.util.logging.Level
-import java.util.logging.Logger
 
 @RestController
 class OsuuspankkiPSD2Controller(private val config: Config) {
