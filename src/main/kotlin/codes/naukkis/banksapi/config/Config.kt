@@ -17,4 +17,20 @@ class Config {
     lateinit var nordeaClientSecret: String
     @Value("\${nordea.redirectUrl}")
     lateinit var nordeaRedirectUrl: String
+    @Value("\${op.client_id}")
+    lateinit var opClientId: String
+    @Value("\${op.client_secret}")
+    lateinit var opClientSecret: String
+    @Value("\${op.tpp_id}")
+    lateinit var opTppId: String
+    @Value("\$op.TppCert")
+    lateinit var opTppCert: String
+    @Value("\$op.TppCertPassword")
+    lateinit var opTppCertPassword: String
+    @Value("\$op.opRedirectUrl")
+    lateinit var opRedirectUrl: String
+    @Value("\$op.opTppKid")
+    lateinit var opTppKid: String
+    @Value("\$op.signingKey")
+    lateinit var opSigningKey: String
 }
