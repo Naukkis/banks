@@ -23,14 +23,14 @@ class Config {
     lateinit var opClientSecret: String
     @Value("\${op.tpp_id}")
     lateinit var opTppId: String
-    @Value("\$op.TppCert")
+    @Value("\${op.tppCert}")
     lateinit var opTppCert: String
-    @Value("\$op.TppCertPassword")
+    @Value("\${op.tppCertPassword}")
     lateinit var opTppCertPassword: String
-    @Value("\$op.opRedirectUrl")
+    @Value("\${op.redirectUrl}")
     lateinit var opRedirectUrl: String
-    @Value("\$op.opTppKid")
+    @Value("\${op.tppKid}")
     lateinit var opTppKid: String
-    @Value("\$op.signingKey")
+    @Value("\${op.signingKey}")
     lateinit var opSigningKey: String
 }
