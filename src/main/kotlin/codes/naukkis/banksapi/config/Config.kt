@@ -29,6 +29,8 @@ class Config {
     lateinit var opTppCertPassword: String
     @Value("\${op.redirectUrl}")
     lateinit var opRedirectUrl: String
+    @Value("\${op.redirectUrlEncoded}")
+    lateinit var opRedirectUrlEncoded: String
     @Value("\${op.tppKid}")
     lateinit var opTppKid: String
     @Value("\${op.signingKey}")

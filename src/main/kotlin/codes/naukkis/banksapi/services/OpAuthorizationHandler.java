@@ -6,7 +6,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.conn.ssl.TrustAllStrategy;
 import org.apache.http.ssl.SSLContextBuilder;
-import org.jetbrains.annotations.Nullable;
 
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
@@ -20,30 +19,28 @@ import java.security.cert.CertificateException;
 import java.time.LocalDateTime;
 import java.util.Map;
 
-public class OpJava {
+public class OpAuthorizationHandler {
     private Config config;
     private HttpClient httpClient;
 
-    public OpJava(Config config) {
+    public OpAuthorizationHandler(Config config) {
         this.config = config;
         this.httpClient = buildAndGetHttpClient();
     }
 
     private static final String TPP_AUTHENTICATION_URL = "https://mtls-apis.psd2-sandbox.op.fi/oauth/token";
+    private static final String ACCOUNT_REGISTER_REQUEST_URL = "https://mtls-apis.psd2-sandbox.op.fi/accounts-psd2/v1/authorizations";
 
-    public String getAccessToken() {
-        HttpResponse<String> response = null;
-        try {
-            response = httpClient.send(buildAndGetAccessRequest(), HttpResponse.BodyHandlers.ofString());
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        Map<String, String> stringStringMap = getResponseBodyAsMap(response);
-        return stringStringMap.get("access_token");
+    public String getAuthorizationId() throws IOException, InterruptedException {
+        String accessToken = fetchAccessToken();
+        return registerTppIntent(accessToken);
     }
 
-    @Nullable
+    private String fetchAccessToken() throws IOException, InterruptedException {
+        HttpResponse<String> response = httpClient.send(buildAndGetAccessRequestToAccounts(), HttpResponse.BodyHandlers.ofString());
+        return getResponseBodyAsMap(response).get("access_token");
+    }
+
     private Map<String, String> getResponseBodyAsMap(HttpResponse<String> response) {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> responseBody = null;
@@ -56,19 +53,13 @@ public class OpJava {
         return responseBody;
     }
 
-    public String registerTppIntent(String accessToken) {
-        try {
+    private String registerTppIntent(String accessToken) throws IOException, InterruptedException {
             HttpRequest registerRequest = getRegisterRequest(accessToken);
             HttpResponse<String> response = httpClient.send(registerRequest, HttpResponse.BodyHandlers.ofString());
             System.out.println(response.body());
             Map<String, String> responseBodyAsMap = getResponseBodyAsMap(response);
-            return responseBodyAsMap.get("authorizationId");
-
             // todo other fields: created, status, expires
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return "jes";
+            return responseBodyAsMap.get("authorizationId");
     }
 
     private HttpRequest getRegisterRequest(String accessToken) {
@@ -81,14 +72,14 @@ public class OpJava {
         ObjectMapper objectMapper = new ObjectMapper();
         String requestBody = "";
         try {
-            requestBody = objectMapper.writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(params);
+            requestBody = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(params);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+
         return HttpRequest.newBuilder()
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody))
-                .uri(URI.create("https://mtls-apis.psd2-sandbox.op.fi/accounts-psd2/v1/authorizations"))
+                .uri(URI.create(ACCOUNT_REGISTER_REQUEST_URL))
                 .setHeader("x-api-key", config.opApiKey)
                 .setHeader("Authorization", "Bearer " + accessToken)
                 .setHeader("x-fapi-financial-id", "test")
@@ -111,7 +102,7 @@ public class OpJava {
         return null;
     }
 
-    private HttpRequest buildAndGetAccessRequest() {
+    private HttpRequest buildAndGetAccessRequestToAccounts() {
         var params = Map.of(
                 "grant_type", "client_credentials",
                 "scope", "accounts",

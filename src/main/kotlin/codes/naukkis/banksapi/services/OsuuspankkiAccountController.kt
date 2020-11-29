@@ -2,11 +2,12 @@ package codes.naukkis.banksapi.services
 
 import codes.naukkis.banksapi.config.Config
 import khttp.get
+import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
-
+@CrossOrigin(origins = ["http://localhost:3000"])
 @RestController
 class OsuuspankkiAccountController(private val config: Config) {
     private val opUrlAccounts = "https://sandbox.apis.op-palvelut.fi/accounts"
@@ -15,9 +16,7 @@ class OsuuspankkiAccountController(private val config: Config) {
             "x-api-key" to config.opApiKey,
             "Authorization" to config.opStaticAuth)
 
-    private val opPSD2url = "https://mtls-apis.psd2-sandbox.op.fi/accounts-psd2"
-
-    @GetMapping("/accounts")
+    @GetMapping("accounts")
     fun accounts(@RequestParam accountId: String): ByteArray {
         val r = get("${opUrlAccounts}/v3/accounts/${accountId}",
                 headers = headers)
@@ -40,6 +39,5 @@ class OsuuspankkiAccountController(private val config: Config) {
 
         return r.content
     }
-
 
 }
