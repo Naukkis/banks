@@ -31,17 +31,17 @@ public class OpAuthorizationHandler {
     private static final String TPP_AUTHENTICATION_URL = "https://mtls-apis.psd2-sandbox.op.fi/oauth/token";
     private static final String ACCOUNT_REGISTER_REQUEST_URL = "https://mtls-apis.psd2-sandbox.op.fi/accounts-psd2/v1/authorizations";
 
-    public String getAuthorizationId() throws IOException, InterruptedException {
+    public String fetchAuthorizationId() throws IOException, InterruptedException {
         String accessToken = fetchAccessToken();
         return registerTppIntent(accessToken);
     }
 
     private String fetchAccessToken() throws IOException, InterruptedException {
         HttpResponse<String> response = httpClient.send(buildAndGetAccessRequestToAccounts(), HttpResponse.BodyHandlers.ofString());
-        return getResponseBodyAsMap(response).get("access_token");
+        return parseResponseBodyToMap(response).get("access_token");
     }
 
-    private Map<String, String> getResponseBodyAsMap(HttpResponse<String> response) {
+    private Map<String, String> parseResponseBodyToMap(HttpResponse<String> response) {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, String> responseBody = null;
         try {
@@ -57,7 +57,7 @@ public class OpAuthorizationHandler {
             HttpRequest registerRequest = getRegisterRequest(accessToken);
             HttpResponse<String> response = httpClient.send(registerRequest, HttpResponse.BodyHandlers.ofString());
             System.out.println(response.body());
-            Map<String, String> responseBodyAsMap = getResponseBodyAsMap(response);
+            Map<String, String> responseBodyAsMap = parseResponseBodyToMap(response);
             // todo other fields: created, status, expires
             return responseBodyAsMap.get("authorizationId");
     }
@@ -93,7 +93,7 @@ public class OpAuthorizationHandler {
         try {
             return HttpClient.newBuilder()
                     .version(HttpClient.Version.HTTP_2)
-                    .sslContext(getSslContext())
+                    .sslContext(buildSslContext())
                     .followRedirects(HttpClient.Redirect.ALWAYS)
                     .build();
         } catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException | IOException | CertificateException | UnrecoverableKeyException e) {
@@ -132,7 +132,7 @@ public class OpAuthorizationHandler {
         return HttpRequest.BodyPublishers.ofString(builder.toString());
     }
 
-    private SSLContext getSslContext() throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException, KeyManagementException {
+    private SSLContext buildSslContext() throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException, KeyManagementException {
         KeyStore clientStore = KeyStore.getInstance("PKCS12");
         InputStream resource = this.getClass().getClassLoader().getResourceAsStream(config.opTppCert);
         clientStore.load(resource, config.opTppCertPassword.toCharArray());

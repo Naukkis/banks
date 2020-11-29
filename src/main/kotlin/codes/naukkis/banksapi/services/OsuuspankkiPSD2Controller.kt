@@ -50,7 +50,7 @@ class OsuuspankkiPSD2Controller(private val config: Config) {
 
     @GetMapping("/opauth")
     fun startAuthorizationFlow(): RedirectView? {
-        val authorizationToken = OpAuthorizationHandler(config).authorizationId
+        val authorizationToken = OpAuthorizationHandler(config).fetchAuthorizationId()
         val jwt = JwtGenerator(config).createJwt(authorizationToken)
         val url = buildAuthorizationRequestUrl(jwt)
 
