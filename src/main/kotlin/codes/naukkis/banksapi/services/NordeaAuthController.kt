@@ -66,7 +66,7 @@ class NordeaAuthController(private val config: Config) {
 
         val r = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
         val accessToken: AccessToken = mapper.readValue(r.body().toString())
-        logger.log(Level.INFO, "access token requested: ${accessTokenResponse.access_token}")
+        logger.log(Level.INFO, "access token requested: ${accessToken.access_token}")
         return accessToken;
     }
 
