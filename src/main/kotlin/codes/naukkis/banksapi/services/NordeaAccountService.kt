@@ -22,7 +22,7 @@ class NordeaAccountService(private val config: Config) {
         val requestBuilder = HttpRequest.newBuilder()
                 .GET()
                 .uri(URI.create("https://api.nordeaopenbanking.com/personal/v4/accounts"))
-                .setHeader("Authorization", "Bearer ${NordeaAuthController(config).getAccessToken()}")
+                .setHeader("Authorization", "Bearer ${NordeaAuthController(config).getAccessToken().access_token}")
 
         val request = setRegularHeaders(requestBuilder).build()
 

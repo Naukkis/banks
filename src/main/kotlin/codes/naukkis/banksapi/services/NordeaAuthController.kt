@@ -4,6 +4,7 @@ import codes.naukkis.banksapi.AccessTokenResponse
 import codes.naukkis.banksapi.config.Config
 import codes.naukkis.banksapi.createFormData
 import codes.naukkis.banksapi.getHttpDate
+import codes.naukkis.banksapi.model.AccessToken
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.springframework.web.bind.annotation.RestController
@@ -23,11 +24,10 @@ class NordeaAuthController(private val config: Config) {
     private val httpClient = HttpClientProvider(config).noRedirectHttpClient
     val mapper = jacksonObjectMapper()
 
-    fun getAccessToken(): String {
+    fun getAccessToken(): AccessToken {
         val authToken = requestAuthToken()
         return fetchAccessToken(authToken)
     }
-
 
     fun requestAuthToken(): String {
         val params = "state=asdfgadf" +
@@ -55,7 +55,7 @@ class NordeaAuthController(private val config: Config) {
         return ""
     }
 
-    fun fetchAccessToken(authCode: String): String {
+    fun fetchAccessToken(authCode: String): AccessToken {
         val params = mapOf("code" to authCode, "grant_type" to "authorization_code", "redirect_uri" to config.nordeaRedirectUrl)
         val requestBuilder = HttpRequest.newBuilder()
                 .POST(createFormData(params))
@@ -65,10 +65,9 @@ class NordeaAuthController(private val config: Config) {
         val request = setRegularHeaders(requestBuilder).build()
 
         val r = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
-        logger.log(Level.INFO, config.nordeaRedirectUrl)
-        accessTokenResponse = mapper.readValue(r.body())
+        val accessToken: AccessToken = mapper.readValue(r.body().toString())
         logger.log(Level.INFO, "access token requested: ${accessTokenResponse.access_token}")
-        return accessTokenResponse.access_token;
+        return accessToken;
     }
 
     private fun setRegularHeaders(builder: HttpRequest.Builder): HttpRequest.Builder {
