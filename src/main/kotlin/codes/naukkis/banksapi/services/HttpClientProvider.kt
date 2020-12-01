@@ -11,17 +11,22 @@ import javax.net.ssl.SSLContext
 
 class HttpClientProvider(private val config: Config) {
     val httpClient: HttpClient
+    val noRedirectHttpClient: HttpClient
 
     init {
-        httpClient = buildAndGetHttpClient()
+        httpClient = buildAndGetHttpClient(true)
+        noRedirectHttpClient = buildAndGetHttpClient(false)
     }
 
-   private  fun buildAndGetHttpClient(): HttpClient {
+   private  fun buildAndGetHttpClient(redirect: Boolean): HttpClient {
         try {
             return HttpClient.newBuilder()
                     .version(HttpClient.Version.HTTP_1_1)
                     .sslContext(buildSslContext())
-                    .followRedirects(HttpClient.Redirect.ALWAYS)
+                    .followRedirects(when {
+                        redirect -> HttpClient.Redirect.ALWAYS
+                        else -> HttpClient.Redirect.NEVER
+                    })
                     .build()
         } catch (e: NoSuchAlgorithmException) {
             e.printStackTrace()

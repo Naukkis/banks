@@ -15,16 +15,14 @@ import java.util.logging.Logger
 @RestController
 class NordeaAccountService(private val config: Config) {
     var logger: Logger = Logger.getLogger(NordeaAccountService::class.java.name)
-    private val httpClient = HttpClient.newBuilder()
-            .version(HttpClient.Version.HTTP_2)
-            .build()
+    private val httpClient = HttpClientProvider(config).noRedirectHttpClient
 
     @GetMapping("/nordeaaccounts")
     fun accounts(): String {
         val requestBuilder = HttpRequest.newBuilder()
                 .GET()
                 .uri(URI.create("https://api.nordeaopenbanking.com/personal/v4/accounts"))
-                .setHeader("Authorization", "Bearer ${accessTokenResponse.access_token}")
+                .setHeader("Authorization", "Bearer ${NordeaAuthController(config).getAccessToken()}")
 
         val request = setRegularHeaders(requestBuilder).build()
 

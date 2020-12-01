@@ -6,11 +6,8 @@ import codes.naukkis.banksapi.createFormData
 import codes.naukkis.banksapi.getHttpDate
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.net.URI
-import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.util.logging.Level
@@ -23,14 +20,16 @@ class NordeaAuthController(private val config: Config) {
     private val tokenExchangeUrl = "https://api.nordeaopenbanking.com/personal/v4/authorize/token"
     private val scope = "ACCOUNTS_BASIC,ACCOUNTS_BALANCES,ACCOUNTS_DETAILS,ACCOUNTS_TRANSACTIONS,PAYMENTS_MULTIPLE"
     var logger: Logger = Logger.getLogger(NordeaAuthController::class.java.name)
-    private val httpClient = HttpClient.newBuilder()
-            .version(HttpClient.Version.HTTP_2)
-            .followRedirects(HttpClient.Redirect.ALWAYS)
-            .build()
+    private val httpClient = HttpClientProvider(config).noRedirectHttpClient
     val mapper = jacksonObjectMapper()
 
-    @GetMapping("/authrequest")
-    fun requestAuthToken() {
+    fun getAccessToken(): String {
+        val authToken = requestAuthToken()
+        return fetchAccessToken(authToken)
+    }
+
+
+    fun requestAuthToken(): String {
         val params = "state=asdfgadf" +
                 "&client_id=${config.nordeaClientId}" +
                 "&redirect_uri=${config.nordeaRedirectUrl}" +
@@ -44,12 +43,20 @@ class NordeaAuthController(private val config: Config) {
                 .setHeader("X-IBM-Client-Id", config.nordeaClientId)
                 .build()
         logger.log(Level.INFO, "begin auth $params")
-        httpClient.send(request, HttpResponse.BodyHandlers.ofString()) // redirects to /nordeaauth
+        val redirectUrl = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).headers().map().get("Location")?.get(0) // get redirect url containin access token
+        return parseAuthCode(redirectUrl)!!
     }
 
-    @GetMapping("/nordeaauth")
-    fun fetchAccessToken(@RequestParam code: String, state: String) {
-        val params = mapOf("code" to code, "grant_type" to "authorization_code", "redirect_uri" to config.nordeaRedirectUrl)
+    private fun parseAuthCode(redirectUrl: String?): String? {
+        if (redirectUrl != null) {
+            val regex = Regex("(code=)(\\S+)(&state)")
+            return regex.find(redirectUrl)?.groupValues?.get(2)
+        }
+        return ""
+    }
+
+    fun fetchAccessToken(authCode: String): String {
+        val params = mapOf("code" to authCode, "grant_type" to "authorization_code", "redirect_uri" to config.nordeaRedirectUrl)
         val requestBuilder = HttpRequest.newBuilder()
                 .POST(createFormData(params))
                 .uri(URI.create(tokenExchangeUrl))
@@ -61,6 +68,7 @@ class NordeaAuthController(private val config: Config) {
         logger.log(Level.INFO, config.nordeaRedirectUrl)
         accessTokenResponse = mapper.readValue(r.body())
         logger.log(Level.INFO, "access token requested: ${accessTokenResponse.access_token}")
+        return accessTokenResponse.access_token;
     }
 
     private fun setRegularHeaders(builder: HttpRequest.Builder): HttpRequest.Builder {
@@ -69,12 +77,11 @@ class NordeaAuthController(private val config: Config) {
                 .setHeader("X-Nordea-Originating-Date", getHttpDate())
                 .setHeader("X-Nordea-Originating-Host", "api.nordeaopenbanking.com")
                 .setHeader("Signature", "SKIP_SIGNATURE_VALIDATION_FOR_SANDBOX")
-        //      .setHeader("Digest", "sha-256=qKEkYt43vgJXW0ibKcHuvm+GhtsOKa/yISq9xk5pVV0=")
         return builder
     }
 
     companion object {
-       lateinit var accessTokenResponse: AccessTokenResponse
+        lateinit var accessTokenResponse: AccessTokenResponse
     }
 
 }
