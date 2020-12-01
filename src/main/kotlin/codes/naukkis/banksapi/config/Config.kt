@@ -35,4 +35,10 @@ class Config {
     lateinit var opTppKid: String
     @Value("\${op.signingKey}")
     lateinit var opSigningKey: String
+    @Value("\${op.staticSigningKey}")
+    lateinit var opStaticSigningKey: String
+    @Value("\${op.staticAud}")
+    lateinit var opStaticAud: String
+
+
 }

@@ -7,9 +7,7 @@ import java.net.URL
 import java.nio.charset.StandardCharsets
 import java.security.KeyFactory
 import java.security.spec.PKCS8EncodedKeySpec
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.ZoneOffset
+import java.time.*
 import java.util.*
 import java.util.Base64.getMimeDecoder
 import java.util.regex.Pattern
@@ -25,6 +23,20 @@ class JwtGenerator(private val config: Config) {
                 .setHeaderParam("typ", "JWT")
                 .setIssuedAt(Date(LocalDate.now().toEpochSecond(LocalTime.now(), ZoneOffset.UTC)))
                 .setClaims(createClaims(authorizationId))
+                .signWith(privateKey)
+                .compact()
+
+        return compact
+    }
+
+    fun createJwtUsingStaticParams(): String {
+        val keyFactory = KeyFactory.getInstance("RSA")
+        val pkcS8EncodedKeySpec = PKCS8EncodedKeySpec(loadPEM(config.opStaticSigningKey))
+        val privateKey = keyFactory.generatePrivate(pkcS8EncodedKeySpec)
+        val compact = Jwts.builder()
+                .setHeaderParam("typ", "JWT")
+                .setIssuedAt(Date(LocalDate.now().toEpochSecond(LocalTime.now(), ZoneOffset.UTC)))
+                .setClaims(getStaticClaims())
                 .signWith(privateKey)
                 .compact()
 
@@ -53,10 +65,21 @@ class JwtGenerator(private val config: Config) {
                 "response_type" to "code id_token",
                 "state" to "1122-234",
                 "redirect_uri" to config.opRedirectUrl,
-                "nonce" to "asdfasf",
                 "max_age" to 86400,
-                "client_id" to config.opClientId,
+                "client_id" to config.opApiKey,
                 "claims" to nestedClaims(authorizationId))
+    }
+
+    private fun getStaticClaims(): Map<String, Any> {
+        return mapOf("aud" to "op_open_oauth",
+                "scope" to "openid accounts accounts:transactions",
+                "iss" to config.opApiKey,
+                "response_type" to "code",
+                "state" to "1122-234",
+                "redirect_uri" to config.opRedirectUrl,
+                "iat" to Instant.now().epochSecond,
+                "exp" to Instant.now().epochSecond + 1000000,
+                "client_id" to config.opApiKey)
     }
 
     private fun nestedClaims(authorizationId: String): Map<String, Map<String, Any>> {

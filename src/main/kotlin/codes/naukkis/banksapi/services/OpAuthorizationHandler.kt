@@ -4,29 +4,20 @@ import codes.naukkis.banksapi.config.Config
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.apache.http.conn.ssl.TrustAllStrategy
-import org.apache.http.ssl.SSLContextBuilder
 import java.io.IOException
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpRequest.BodyPublisher
 import java.net.http.HttpResponse
-import java.security.*
-import java.security.cert.CertificateException
 import java.time.LocalDateTime
-import javax.net.ssl.SSLContext
 
 class OpAuthorizationHandler(private val config: Config) {
-    private val httpClient: HttpClient?
+    private val httpClient: HttpClient? = HttpClientProvider(config).httpClient
 
     companion object {
         private const val TPP_AUTHENTICATION_URL = "https://mtls-apis.psd2-sandbox.op.fi/oauth/token"
         private const val ACCOUNT_REGISTER_REQUEST_URL = "https://mtls-apis.psd2-sandbox.op.fi/accounts-psd2/v1/authorizations"
-    }
-
-    init {
-        httpClient = buildAndGetHttpClient()
     }
 
     @Throws(IOException::class, InterruptedException::class)
@@ -86,29 +77,6 @@ class OpAuthorizationHandler(private val config: Config) {
                 .build()
     }
 
-    private fun buildAndGetHttpClient(): HttpClient? {
-        try {
-            return HttpClient.newBuilder()
-                    .version(HttpClient.Version.HTTP_2)
-                    .sslContext(buildSslContext())
-                    .followRedirects(HttpClient.Redirect.ALWAYS)
-                    .build()
-        } catch (e: NoSuchAlgorithmException) {
-            e.printStackTrace()
-        } catch (e: KeyManagementException) {
-            e.printStackTrace()
-        } catch (e: KeyStoreException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: CertificateException) {
-            e.printStackTrace()
-        } catch (e: UnrecoverableKeyException) {
-            e.printStackTrace()
-        }
-        return null
-    }
-
     private fun buildAndGetAccessRequestToAccounts(): HttpRequest {
         val params = java.util.Map.of(
                 "grant_type", "client_credentials",
@@ -133,18 +101,6 @@ class OpAuthorizationHandler(private val config: Config) {
             builder.append(data[key])
         }
         return HttpRequest.BodyPublishers.ofString(builder.toString())
-    }
-
-    @Throws(KeyStoreException::class, IOException::class, NoSuchAlgorithmException::class, CertificateException::class, UnrecoverableKeyException::class, KeyManagementException::class)
-    private fun buildSslContext(): SSLContext {
-        val clientStore = KeyStore.getInstance("PKCS12")
-        val resource = this.javaClass.classLoader.getResourceAsStream(config.opTppCert)
-        clientStore.load(resource, config.opTppCertPassword.toCharArray())
-        val sslContextBuilder = SSLContextBuilder()
-        sslContextBuilder.setProtocol("TLSv1.2")
-        sslContextBuilder.loadKeyMaterial(clientStore, config.opTppCertPassword.toCharArray())
-        sslContextBuilder.loadTrustMaterial(TrustAllStrategy.INSTANCE)
-        return sslContextBuilder.build()
     }
 
 }
