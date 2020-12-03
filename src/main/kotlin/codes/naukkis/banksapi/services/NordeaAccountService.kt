@@ -3,6 +3,7 @@ package codes.naukkis.banksapi.services
 import codes.naukkis.banksapi.config.Config
 import codes.naukkis.banksapi.getHttpDate
 import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -12,6 +13,7 @@ import java.net.http.HttpResponse
 import java.util.logging.Level
 import java.util.logging.Logger
 
+@CrossOrigin(origins = ["http://localhost:3000"])
 @RestController
 class NordeaAccountService(private val config: Config) {
     var logger: Logger = Logger.getLogger(NordeaAccountService::class.java.name)
