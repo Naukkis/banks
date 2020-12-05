@@ -1,6 +1,7 @@
 import React from 'react';
 import { Switch, Route, Link } from "react-router-dom";
 import AccountListing from "./AccountListing";
+import Transactions from './Transactions'
 
 class NordeaApiSelection extends React.Component {
   constructor() {
@@ -13,8 +14,8 @@ class NordeaApiSelection extends React.Component {
   }
 
 
-  /*  componentDidMount() {
-   fetch("https://localhost:8443/nordea/accounts")
+  componentDidMount() {
+    fetch("https://localhost:8443/nordea/accounts/all")
       .then(res => res.json())
       .then(
         (result) => {
@@ -30,58 +31,10 @@ class NordeaApiSelection extends React.Component {
           });
         }
       )
-  } */
+  }
 
 
   render() {
-    const dummyData = {
-      group_header: {
-        message_identification: "GdGQd2RvjgBjzNwZ",
-        creation_date_time: "2020-12-03T15:00:34.773286Z",
-        http_code: 200
-      },
-      response:
-      {
-        accounts:
-          [{
-            country: "FI",
-            account_numbers: [{ value: "FI7473834510057469", _type: "IBAN" }], 
-            currency: "EUR", 
-            account_name: "Aino Salo", 
-            product: "KÄYTTÖTILI", 
-            account_type: "Current", 
-            available_balance: "3395.40", 
-            booked_balance: "3383.30", 
-            value_dated_balance: "3383.30", 
-            bank: { name: "Nordea", bic: "NDEAFIHH", country: "FI" }, 
-            status: "OPEN", 
-            credit_limit: "100.00",
-            latest_transaction_booking_date: "2020-12-03",
-            _links: [{ rel: "details", href: "/v4/accounts/FI7473834510057469-EUR" },
-            { rel: "transactions", href: "/v4/accounts/FI7473834510057469-EUR/transactions" }],
-            _id: "FI7473834510057469-EUR"
-          },
-          {
-            country: "FI",
-            account_numbers: [{ value: "FI7473834510057469", _type: "IBAN" }], 
-            currency: "EUR", 
-            account_name: "Aino Salo", 
-            product: "KÄYTTÖTILI", 
-            account_type: "Current", 
-            available_balance: "3395.40", 
-            booked_balance: "3383.30", 
-            value_dated_balance: "3383.30", 
-            bank: { name: "Nordea", bic: "NDEAFIHH", country: "FI" }, 
-            status: "OPEN", 
-            credit_limit: "100.00",
-            latest_transaction_booking_date: "2020-12-03",
-            _links: [{ rel: "details", href: "/v4/accounts/FI7473834510057469-EUR" },
-            { rel: "transactions", href: "/v4/accounts/FI7473834510057469-EUR/transactions" }],
-            _id: "FI7473834510057469-EUR"
-          }
-          ]
-      }
-    };
 
     return (
       <div>
@@ -98,12 +51,12 @@ class NordeaApiSelection extends React.Component {
         </div>
 
         <Switch>
-          <Route path={"/nordea/accounts"}>
-            <AccountListing accounts={dummyData.response.accounts} />
+          <Route exact path={"/nordea/accounts"}>
+            <AccountListing accounts={this.state.accounts} />
           </Route>
-          <Route path="/nordea">
-            <h3>Please select a topic.</h3>
-          </Route>
+          <Route
+            path="/nordea/accounts/:accountId"
+            render={({ match }) => <Transactions match={match} />} />
         </Switch>
 
       </div>
