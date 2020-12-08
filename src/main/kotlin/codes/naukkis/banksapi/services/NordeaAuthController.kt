@@ -19,7 +19,7 @@ import java.util.logging.Logger
 class NordeaAuthController(private val config: Config) {
     private val authUrl = "https://api.nordeaopenbanking.com/personal/v4/authorize?"
     private val tokenExchangeUrl = "https://api.nordeaopenbanking.com/personal/v4/authorize/token"
-    private val scope = "ACCOUNTS_BASIC,ACCOUNTS_BALANCES,ACCOUNTS_DETAILS,ACCOUNTS_TRANSACTIONS,PAYMENTS_MULTIPLE"
+    private val scope = "ACCOUNTS_BASIC,ACCOUNTS_BALANCES,ACCOUNTS_DETAILS,ACCOUNTS_TRANSACTIONS,PAYMENTS_MULTIPLE,CARDS_INFORMATION,CARDS_TRANSACTIONS"
     var logger: Logger = Logger.getLogger(NordeaAuthController::class.java.name)
     private val httpClient = HttpClientProvider(config).noRedirectHttpClient
     val mapper = jacksonObjectMapper()
