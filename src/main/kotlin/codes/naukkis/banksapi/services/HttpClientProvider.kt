@@ -1,10 +1,12 @@
 package codes.naukkis.banksapi.services
 
 import codes.naukkis.banksapi.config.Config
+import codes.naukkis.banksapi.getHttpDate
 import org.apache.http.conn.ssl.TrustAllStrategy
 import org.apache.http.ssl.SSLContextBuilder
 import java.io.IOException
 import java.net.http.HttpClient
+import java.net.http.HttpRequest
 import java.security.*
 import java.security.cert.CertificateException
 import javax.net.ssl.SSLContext
@@ -55,4 +57,5 @@ class HttpClientProvider(private val config: Config) {
         sslContextBuilder.loadTrustMaterial(TrustAllStrategy.INSTANCE)
         return sslContextBuilder.build()
     }
+
 }

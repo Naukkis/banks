@@ -1,6 +1,7 @@
 package codes.naukkis.banksapi.services
 
 import codes.naukkis.banksapi.config.Config
+import codes.naukkis.banksapi.config.NordeaApiHeaders
 import codes.naukkis.banksapi.getHttpDate
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.CrossOrigin
@@ -26,7 +27,7 @@ class NordeaAccountService(private val config: Config) {
             .uri(URI.create("https://api.nordeaopenbanking.com/personal/v4/accounts"))
             .setHeader("Authorization", "Bearer ${NordeaAuthController(config).getAccessToken().access_token}")
 
-        val request = setRegularHeaders(requestBuilder).build()
+        val request = NordeaApiHeaders(config).setTo(requestBuilder).build()
 
         val r = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
         logger.log(Level.INFO, "accounts requested")
@@ -40,7 +41,7 @@ class NordeaAccountService(private val config: Config) {
             .uri(URI.create("https://api.nordeaopenbanking.com/personal/v4/accounts/${accountId}"))
             .setHeader("Authorization", "Bearer ${NordeaAuthController(config).getAccessToken().access_token}")
 
-        val request = setRegularHeaders(requestBuilder).build()
+        val request = NordeaApiHeaders(config).setTo(requestBuilder).build()
 
         val r = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
         logger.log(Level.INFO, "account $accountId requested")
@@ -54,21 +55,11 @@ class NordeaAccountService(private val config: Config) {
             .uri(URI.create("https://api.nordeaopenbanking.com/personal/v4/accounts/${accountId}/transactions"))
             .setHeader("Authorization", "Bearer ${NordeaAuthController(config).getAccessToken().access_token}")
 
-        val request = setRegularHeaders(requestBuilder).build()
+        val request = NordeaApiHeaders(config).setTo(requestBuilder).build()
 
         val r = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
         logger.log(Level.INFO, "transactions for account $accountId requested")
         return r.body()
     }
 
-
-    private fun setRegularHeaders(builder: HttpRequest.Builder): HttpRequest.Builder {
-        builder.setHeader("X-IBM-Client-ID", config.nordeaClientId)
-            .setHeader("X-IBM-Client-Secret", config.nordeaClientSecret)
-            .setHeader("X-Nordea-Originating-Date", getHttpDate())
-            .setHeader("X-Nordea-Originating-Host", "api.nordeaopenbanking.com")
-            .setHeader("Signature", "SKIP_SIGNATURE_VALIDATION_FOR_SANDBOX")
-        //      .setHeader("Digest", "sha-256=qKEkYt43vgJXW0ibKcHuvm+GhtsOKa/yISq9xk5pVV0=")
-        return builder
-    }
 }
