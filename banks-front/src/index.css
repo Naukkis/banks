@@ -21,3 +21,19 @@ code {
   border: 3px solid #212c69;
   padding: 5px;
 }
+
+.transaction {
+  border: 3px solid #212c69;
+}
+
+.transaction-column {
+  float: left;
+  width: 800px;
+  padding: 5px 8px 0px 0px;
+}
+
+.transaction-column-amount {
+  padding: 8px 8px 8px 0px;
+  text-align: right;
+}
+

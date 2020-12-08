@@ -1,18 +1,23 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 
-function Transaction(props){
+function Transaction(props) {
     return (
         <div className="transaction">
-             <p>Booking date: {props.transaction.booking_date}</p>
-             <p>Value date: {props.transaction.value_date}</p>
-             <p>Description: {props.transaction.type_description}</p>
-             <p>Amount: {props.transaction.amount}</p>
-             <p>Narrative: {props.transaction.narrative}</p>
-             <p>Message: {props.transaction.message}</p>
-
+            <div className="transaction-column">Description: {props.transaction.type_description}</div>
+              <div className="transaction-column-amount"> Amount: {props.transaction.amount}</div>
+            <p>Counterparty name: {props.transaction.counterparty_name}</p>
+            <p>Transaction date: {props.transaction.transaction_date}</p>
+          
+            <p>Booking date: {props.transaction.booking_date}</p>
+            <p>Value date: {props.transaction.value_date}</p>
+            <p>Narrative: {props.transaction.narrative}</p>
+            <p>Message: {props.transaction.message}</p>
+            <p>Status: {props.transaction.status}</p>
+            <p>Own message: {props.transaction.own_message}</p>
+            <p>Payment date: {props.transaction.payment_date}</p>
         </div>
-        )
+    )
 }
 
 export default Transaction;
