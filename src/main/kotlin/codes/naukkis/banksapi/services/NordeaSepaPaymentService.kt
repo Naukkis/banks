@@ -33,6 +33,20 @@ class NordeaSepaPaymentService(private val config: Config) {
         return r.body()
     }
 
+    @GetMapping("/payments/{paymentId}")
+    fun payment(@PathVariable paymentId: String): String {
+        val requestBuilder = HttpRequest.newBuilder()
+            .GET()
+            .uri(URI.create("https://api.nordeaopenbanking.com/personal/v4/payments/sepa/${paymentId}"))
+            .setHeader("Authorization", "Bearer ${NordeaAuthController(config).getAccessToken().access_token}")
+
+        val request = NordeaApiHeaders(config).setTo(requestBuilder).build()
+
+        val r = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
+        logger.log(Level.INFO, "payments requested")
+        return r.body()
+    }
+
     @PostMapping("/payments")
     fun createPayment(
         @RequestParam(name = "amount") amount: String,
@@ -61,5 +75,21 @@ class NordeaSepaPaymentService(private val config: Config) {
             .setHeader("Accept", "application/json")
 
         val request = NordeaApiHeaders(config).setTo(requestBuilder).build()
+        val r = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
+        logger.log(Level.INFO, r.body())
+    }
+
+    @PutMapping("/payments")
+    fun confirmPayments(@RequestParam(name = "payments") payments: String) {
+        val requestBuilder = HttpRequest.newBuilder()
+            .PUT(HttpRequest.BodyPublishers.ofString(payments))
+            .uri(URI.create("https://api.nordeaopenbanking.com/personal/v4/payments/sepa/confirm"))
+            .setHeader("Authorization", "Bearer ${NordeaAuthController(config).getAccessToken().access_token}")
+            .setHeader("Content-Type", "application/json; charset=UTF-8")
+            .setHeader("Accept", "application/json")
+
+        val request = NordeaApiHeaders(config).setTo(requestBuilder).build()
+        val r = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
+        logger.log(Level.INFO, r.body())
     }
 }
