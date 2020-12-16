@@ -5,6 +5,7 @@ import codes.naukkis.banksapi.config.Config
 import codes.naukkis.banksapi.createFormData
 import codes.naukkis.banksapi.getHttpDate
 import codes.naukkis.banksapi.model.AccessToken
+import codes.naukkis.banksapi.model.Bank.NORDEA
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.springframework.web.bind.annotation.RestController
@@ -21,7 +22,7 @@ class NordeaAuthController(private val config: Config) {
     private val tokenExchangeUrl = "https://api.nordeaopenbanking.com/personal/v4/authorize/token"
     private val scope = "ACCOUNTS_BASIC,ACCOUNTS_BALANCES,ACCOUNTS_DETAILS,ACCOUNTS_TRANSACTIONS,PAYMENTS_MULTIPLE,CARDS_INFORMATION,CARDS_TRANSACTIONS"
     var logger: Logger = Logger.getLogger(NordeaAuthController::class.java.name)
-    private val httpClient = HttpClientProvider(config).noRedirectHttpClient
+    private val httpClient = HttpClientProvider(config, NORDEA).noRedirectHttpClient
     val mapper = jacksonObjectMapper()
 
     fun getAccessToken(): AccessToken {

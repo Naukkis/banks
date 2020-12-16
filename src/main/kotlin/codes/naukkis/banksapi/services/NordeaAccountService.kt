@@ -2,7 +2,7 @@ package codes.naukkis.banksapi.services
 
 import codes.naukkis.banksapi.config.Config
 import codes.naukkis.banksapi.config.NordeaApiHeaders
-import codes.naukkis.banksapi.getHttpDate
+import codes.naukkis.banksapi.model.Bank.NORDEA
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
@@ -18,7 +18,7 @@ import java.util.logging.Logger
 @RestController
 class NordeaAccountService(private val config: Config) {
     var logger: Logger = Logger.getLogger(NordeaAccountService::class.java.name)
-    private val httpClient = HttpClientProvider(config).noRedirectHttpClient
+    private val httpClient = HttpClientProvider(config, NORDEA).noRedirectHttpClient
 
     @GetMapping("/nordea/accounts/all", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun accounts(): String {

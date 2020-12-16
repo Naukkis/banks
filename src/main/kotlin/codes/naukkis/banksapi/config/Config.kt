@@ -7,16 +7,20 @@ import org.springframework.context.annotation.PropertySource
 @Configuration()
 @PropertySource("classpath:bank.properties")
 class Config {
-    @Value("\${op.apikey}")
-    lateinit var opApiKey: String
-    @Value("\${op.staticauth}")
-    lateinit var opStaticAuth: String
+    @Value("\${nordea.tppCert}")
+    lateinit var nordeaTppCertPath: String
+    @Value("\${nordea.tppCertPassword}")
+    lateinit var nordeaTppCertPassword: String
     @Value("\${nordea.clientId}")
     lateinit var nordeaClientId: String
     @Value("\${nordea.clientSecret}")
     lateinit var nordeaClientSecret: String
     @Value("\${nordea.redirectUrl}")
     lateinit var nordeaRedirectUrl: String
+    @Value("\${op.apikey}")
+    lateinit var opApiKey: String
+    @Value("\${op.staticauth}")
+    lateinit var opStaticAuth: String
     @Value("\${op.client_id}")
     lateinit var opClientId: String
     @Value("\${op.client_secret}")

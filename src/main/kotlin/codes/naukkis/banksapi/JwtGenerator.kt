@@ -18,15 +18,13 @@ class JwtGenerator(private val config: Config) {
         val keyFactory = KeyFactory.getInstance("ECDSA")
         val pkcS8EncodedKeySpec = PKCS8EncodedKeySpec(loadPEM(config.opSigningKey))
         val privateKey = keyFactory.generatePrivate(pkcS8EncodedKeySpec)
-        val compact = Jwts.builder()
+        return Jwts.builder()
                 .setHeaderParam("kid", config.opTppKid)
                 .setHeaderParam("typ", "JWT")
                 .setIssuedAt(Date(LocalDate.now().toEpochSecond(LocalTime.now(), ZoneOffset.UTC)))
                 .setClaims(createClaims(authorizationId))
                 .signWith(privateKey)
                 .compact()
-
-        return compact
     }
 
     fun createJwtUsingStaticParams(): String {
@@ -63,7 +61,7 @@ class JwtGenerator(private val config: Config) {
                 "scope" to "openid accounts",
                 "iss" to config.opTppId,
                 "response_type" to "code id_token",
-                "state" to "1122-234",
+                "state" to generateState(),
                 "redirect_uri" to config.opRedirectUrl,
                 "max_age" to 86400,
                 "client_id" to config.opApiKey,
@@ -75,12 +73,14 @@ class JwtGenerator(private val config: Config) {
                 "scope" to "openid accounts accounts:transactions",
                 "iss" to config.opApiKey,
                 "response_type" to "code",
-                "state" to "1122-234",
+                "state" to generateState(),
                 "redirect_uri" to config.opRedirectUrl,
                 "iat" to Instant.now().epochSecond,
                 "exp" to Instant.now().epochSecond + 1000000,
                 "client_id" to config.opApiKey)
     }
+
+    private fun generateState() = "1122-234"
 
     private fun nestedClaims(authorizationId: String): Map<String, Map<String, Any>> {
         return content(authorizationId)

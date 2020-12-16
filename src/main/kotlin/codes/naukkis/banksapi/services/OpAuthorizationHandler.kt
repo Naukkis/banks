@@ -1,6 +1,7 @@
 package codes.naukkis.banksapi.services
 
 import codes.naukkis.banksapi.config.Config
+import codes.naukkis.banksapi.model.Bank.OSUUSPANKKI
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -13,7 +14,7 @@ import java.net.http.HttpResponse
 import java.time.LocalDateTime
 
 class OpAuthorizationHandler(private val config: Config) {
-    private val httpClient: HttpClient? = HttpClientProvider(config).httpClient
+    private val httpClient: HttpClient? = HttpClientProvider(config, OSUUSPANKKI).httpClient
 
     companion object {
         private const val TPP_AUTHENTICATION_URL = "https://mtls-apis.psd2-sandbox.op.fi/oauth/token"

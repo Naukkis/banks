@@ -17,7 +17,7 @@ import java.util.logging.Logger
 @RequestMapping("/nordea")
 class NordeaSepaPaymentService(private val config: Config) {
     var logger: Logger = Logger.getLogger(NordeaSepaPaymentService::class.java.name)
-    private val httpClient = HttpClientProvider(config).noRedirectHttpClient
+    private val httpClient = HttpClientProvider(config, Bank.OSUUSPANKKI).noRedirectHttpClient
 
     @GetMapping("/payments", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun payments(): String {

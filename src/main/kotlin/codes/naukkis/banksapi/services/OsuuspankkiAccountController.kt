@@ -2,6 +2,7 @@ package codes.naukkis.banksapi.services
 
 import codes.naukkis.banksapi.JwtGenerator
 import codes.naukkis.banksapi.config.Config
+import codes.naukkis.banksapi.model.Bank
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -26,7 +27,7 @@ class OsuuspankkiAccountController(private val config: Config) {
             "Authorization" to config.opStaticAuth,
             "accept" to "application/json")
 
-    private val httpClient: HttpClient = HttpClientProvider(config).httpClient
+    private val httpClient: HttpClient = HttpClientProvider(config, Bank.OSUUSPANKKI).httpClient
 
     @GetMapping("/authflow")
     fun authFlow(): RedirectView? {
