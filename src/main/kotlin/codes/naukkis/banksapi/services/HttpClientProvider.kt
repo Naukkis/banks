@@ -57,10 +57,22 @@ class HttpClientProvider(private val config: Config, bank: Bank) {
     )
     private fun buildSslContext(bank: Bank): SSLContext {
         return when (bank) {
-            Bank.NORDEA ->  buildNordeaSslContext()
-            Bank.OSUUSPANKKI ->   buildOpSslContext()
+            Bank.NORDEA -> buildNordeaSslContext()
+            Bank.OSUUSPANKKI -> buildOpSslContext()
+            Bank.S_PANKKI -> buildSpankkiSllContext()
         }
 
+    }
+
+    private fun buildSpankkiSllContext(): SSLContext {
+        val clientStore = KeyStore.getInstance("PKCS12")
+        val resource = this.javaClass.classLoader.getResourceAsStream(config.spankkiTlsCert)
+        clientStore.load(resource, config.spankkiCertPassword.toCharArray())
+        val sslContextBuilder = SSLContextBuilder()
+        sslContextBuilder.setProtocol("TLSv1.2")
+        sslContextBuilder.loadKeyMaterial(clientStore, config.spankkiCertPassword.toCharArray())
+        sslContextBuilder.loadTrustMaterial(TrustAllStrategy.INSTANCE)
+        return sslContextBuilder.build()
     }
 
     private fun buildOpSslContext(): SSLContext {

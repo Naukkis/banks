@@ -44,5 +44,14 @@ class Config {
     @Value("\${op.staticAud}")
     lateinit var opStaticAud: String
 
-
+    @Value("\${spankki.signingCert}")
+    lateinit var spankkiSigningKey: String
+    @Value("\${spankki.tlsCert}")
+    lateinit var spankkiTlsCert: String
+    @Value("\${spankki.certPassword}")
+    lateinit var spankkiCertPassword: String
+    @Value("\${spankki.clientId}")
+    lateinit var spankkiClientId: String
+    @Value("\${spankki.apiKey}")
+    lateinit var spankkiApiKey: String
 }
