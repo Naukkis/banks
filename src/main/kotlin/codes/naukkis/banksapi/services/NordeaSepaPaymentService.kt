@@ -17,13 +17,14 @@ import java.util.logging.Logger
 @RequestMapping("/nordea")
 class NordeaSepaPaymentService(private val config: Config) {
     var logger: Logger = Logger.getLogger(NordeaSepaPaymentService::class.java.name)
+    val paymentsUrl = "https://api.nordeaopenbanking.com/personal/v4/payments/sepa"
     private val httpClient = HttpClientProvider(config, Bank.OSUUSPANKKI).noRedirectHttpClient
 
     @GetMapping("/payments", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun payments(): String {
         val requestBuilder = HttpRequest.newBuilder()
             .GET()
-            .uri(URI.create("https://api.nordeaopenbanking.com/personal/v4/payments/sepa"))
+            .uri(URI.create(paymentsUrl))
             .setHeader("Authorization", "Bearer ${NordeaAuthController(config).getAccessToken().access_token}")
 
         val request = NordeaApiHeaders(config).setTo(requestBuilder).build()
@@ -38,7 +39,7 @@ class NordeaSepaPaymentService(private val config: Config) {
     fun payment(@PathVariable paymentId: String): String {
         val requestBuilder = HttpRequest.newBuilder()
             .GET()
-            .uri(URI.create("https://api.nordeaopenbanking.com/personal/v4/payments/sepa/${paymentId}"))
+            .uri(URI.create("${paymentsUrl}/${paymentId}"))
             .setHeader("Authorization", "Bearer ${NordeaAuthController(config).getAccessToken().access_token}")
 
         val request = NordeaApiHeaders(config).setTo(requestBuilder).build()
@@ -66,11 +67,9 @@ class NordeaSepaPaymentService(private val config: Config) {
         val objectMapper = ObjectMapper()
         val sepaPaymentJson = objectMapper.writeValueAsString(sepaPayment)
 
-        val postPaymentUrl = "https://api.nordeaopenbanking.com/personal/v4/payments/sepa"
-
         val requestBuilder = HttpRequest.newBuilder()
             .POST(HttpRequest.BodyPublishers.ofString(sepaPaymentJson))
-            .uri(URI.create(postPaymentUrl))
+            .uri(URI.create(paymentsUrl))
             .setHeader("Authorization", "Bearer ${NordeaAuthController(config).getAccessToken().access_token}")
             .setHeader("Content-Type", "application/json; charset=UTF-8")
             .setHeader("Accept", "application/json")
@@ -85,7 +84,7 @@ class NordeaSepaPaymentService(private val config: Config) {
     fun confirmPayments(@RequestParam(name = "payments") payments: String) {
         val requestBuilder = HttpRequest.newBuilder()
             .PUT(HttpRequest.BodyPublishers.ofString(payments))
-            .uri(URI.create("https://api.nordeaopenbanking.com/personal/v4/payments/sepa/confirm"))
+            .uri(URI.create("${paymentsUrl}/confirm"))
             .setHeader("Authorization", "Bearer ${NordeaAuthController(config).getAccessToken().access_token}")
             .setHeader("Content-Type", "application/json; charset=UTF-8")
             .setHeader("Accept", "application/json")
