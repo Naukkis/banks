@@ -37,3 +37,7 @@ code {
   text-align: right;
 }
 
+input[type=text] {
+  display: block;
+}
+

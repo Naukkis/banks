@@ -2,6 +2,7 @@ import React from 'react';
 import { Switch, Route, Link } from "react-router-dom";
 import AccountListing from "./AccountListing";
 import Transactions from './Transactions'
+import Payments from './Payments'
 
 class NordeaApiSelection extends React.Component {
   constructor() {
@@ -48,6 +49,9 @@ class NordeaApiSelection extends React.Component {
           <Link to="/nordea/cards">
             <p>Cards</p>
           </Link>
+          <Link to="/nordea/payments">
+            <p>Payments</p>
+          </Link>
         </div>
 
         <Switch>
@@ -57,6 +61,9 @@ class NordeaApiSelection extends React.Component {
           <Route
             path="/nordea/accounts/:accountId"
             render={({ match }) => <Transactions match={match} />} />
+          <Route exact path={"/nordea/payments"}>
+              <Payments/>
+          </Route>
         </Switch>
 
       </div>
