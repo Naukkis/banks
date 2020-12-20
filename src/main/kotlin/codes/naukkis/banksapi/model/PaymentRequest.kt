@@ -1,6 +1,9 @@
 package codes.naukkis.banksapi.model
 
-class PaymentRequest(val debtor: Debtor, val creditor: Creditor) {
-
-
-}
+data class PaymentRequest(
+    val amount: String,
+    val recipientName: String,
+    val recipientAccount: String,
+    val message: String,
+    val debtorAccountNumber: String
+)

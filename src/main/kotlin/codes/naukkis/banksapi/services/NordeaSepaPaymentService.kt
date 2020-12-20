@@ -49,27 +49,25 @@ class NordeaSepaPaymentService(private val config: Config) {
     }
 
     @PostMapping("/payments")
-    fun createPayment(
-        @RequestParam(name = "amount") amount: String,
-        @RequestParam(name = "creditorAccountNumber") creditorAccountNumber: String,
-        @RequestParam(name = "debtorAccountNumber") debtorAccountNumber: String,
-        @RequestParam(name = "message") message: String,
-        @RequestParam(name = "creditorName") name: String,
-        @RequestParam(name = "reference") reference: String
-    ): String {
+    fun createPayment(@RequestBody paymentRequest: PaymentRequest): String {
         val accountType = "IBAN"
         val currency = "EUR"
 
-        val debtor = Debtor(Account(accountType, currency, debtorAccountNumber), message)
-        val creditor =
-            Creditor(Account(accountType, currency,creditorAccountNumber), name, message, Reference("RF11223344", "RF"))
-        val sepaPayment = SepaPayment(creditor, debtor, amount, currency, accountType)
+        val debtorAccountNumber = paymentRequest.debtorAccountNumber.filter { !it.isWhitespace() }
+        val debtor = Debtor(Account(accountType, currency, debtorAccountNumber), paymentRequest.message)
+
+        val creditorAccountNumber = paymentRequest.recipientAccount.filter { !it.isWhitespace() }
+        val creditor = Creditor(Account(accountType, currency, creditorAccountNumber),
+            paymentRequest.recipientName,
+            paymentRequest.message,
+            Reference("RF11223344", "RF"))
+        val sepaPayment = SepaPayment(creditor, debtor, paymentRequest.amount, currency, accountType)
 
         val objectMapper = ObjectMapper()
         val sepaPaymentJson = objectMapper.writeValueAsString(sepaPayment)
 
         val postPaymentUrl = "https://api.nordeaopenbanking.com/personal/v4/payments/sepa"
-        val httpbin = "https://httpbin.org/post"
+
         val requestBuilder = HttpRequest.newBuilder()
             .POST(HttpRequest.BodyPublishers.ofString(sepaPaymentJson))
             .uri(URI.create(postPaymentUrl))
@@ -78,7 +76,7 @@ class NordeaSepaPaymentService(private val config: Config) {
             .setHeader("Accept", "application/json")
 
         val request = NordeaApiHeaders(config).setTo(requestBuilder).build()
-        val r = httpClient.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString())
+        val r = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
         logger.log(Level.INFO, r.body())
         return r.body();
     }

@@ -24,8 +24,21 @@ class Payments extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        fetch(`https://localhost:8443/nordea/payments/?amount=${this.state.amount}&creditorName=${this.state.recipientName}&creditorAccountNumber=${this.state.recipientAccount}&message=${this.state.message}&debtorAccountNumber=FI7473834510057469`, {
-            method: 'POST'
+        const payment = {
+            amount: this.state.amount,
+            recipientName: this.state.recipientName,
+            recipientAccount: this.state.recipientAccount,
+            message: this.state.message,
+            debtorAccountNumber: "FI7473834510057469"
+        }
+
+        fetch(`https://localhost:8443/nordea/payments`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(payment)
+
         })
             .then(res => res.json())
             .then(
