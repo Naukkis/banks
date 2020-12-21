@@ -14,8 +14,20 @@ class Payments extends React.Component {
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.fetchPayments = this.fetchPayments.bind(this);
     }
 
+    fetchPayments() {
+        fetch("https://localhost:8443/nordea/payments/")
+            .then(res => res.json())
+            .then((allPaymentsResponse) => {
+                if (allPaymentsResponse.response) {
+                    this.setState({
+                        payments: allPaymentsResponse.response.payments
+                    })
+                }
+            });
+    }
 
     handleChange(event) {
         const target = event.target;
@@ -36,38 +48,31 @@ class Payments extends React.Component {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(payment)
+            },
+            body: JSON.stringify(payment)
 
         })
             .then(res => res.json())
-            .then(
-                (result) => {
-                 /*   this.setState({
-                 amount: '',
-                recipientName: '',
-                recipientAccount: '',
-                message: '',
-                    }); */
-                
-                    fetch("https://localhost:8443/nordea/payments/")
-                    .then(res => res.json())
-                    .then((allPaymentsResponse) => {
-                        this.setState({
-                            payments: allPaymentsResponse.response.payments
-                        })
-                    })
-
-                },
+            .then((result) => {
+                this.setState({
+                    amount: '',
+                    recipientName: '',
+                    recipientAccount: '',
+                    message: '',
+                });
+                this.fetchPayments();
+            },
                 (error) => {
                     this.setState({
                         error
                     });
                 }
             )
-        
     }
 
+    componentDidMount() {
+        this.fetchPayments();
+    }
 
     render() {
 
@@ -112,20 +117,21 @@ class Payments extends React.Component {
 
                 <h3>Payments</h3>
                 {this.state.payments &&
-                    this.state.payments.map(payment => 
-                            <Payment 
+                    this.state.payments.map(payment =>
+                        <Payment
                             key={payment._id}
-                            receiver={payment.creditor.name} 
-                            receiverAccount={payment.creditor.account.value} 
-                            amount={payment.amount} 
-                            message={payment.creditor.message} 
-                            status={payment.payment_status} 
+                            paymentId={payment._id}
+                            receiver={payment.creditor.name}
+                            receiverAccount={payment.creditor.account.value}
+                            amount={payment.amount}
+                            message={payment.creditor.message}
+                            status={payment.payment_status}
                             date={payment.requested_execution_date}
-                            />
+                        />
 
-                        )
+                    )
 
-                } 
+                }
             </div>
         )
     }

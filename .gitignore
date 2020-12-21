@@ -37,3 +37,4 @@ build/
 *.p12
 *.jks
 src/main/resources/readMe.txt
+/src/main/resources/spankki-tls-publickey.crt

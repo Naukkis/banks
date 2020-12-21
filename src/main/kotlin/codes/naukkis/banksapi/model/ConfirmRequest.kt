@@ -1,4 +1,4 @@
 package codes.naukkis.banksapi.model
 
-class ConfirmRequest {
+class ConfirmRequest(val payments_ids: Array<String>) {
 }

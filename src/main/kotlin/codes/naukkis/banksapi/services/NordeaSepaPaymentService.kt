@@ -36,7 +36,7 @@ class NordeaSepaPaymentService(private val config: Config) {
     }
 
     @GetMapping("/payments/{paymentId}")
-    fun payment(@PathVariable paymentId: String): String {
+    fun payment(@RequestParam paymentId: String): String {
         val requestBuilder = HttpRequest.newBuilder()
             .GET()
             .uri(URI.create("${paymentsUrl}/${paymentId}"))
@@ -80,10 +80,13 @@ class NordeaSepaPaymentService(private val config: Config) {
         return r.body();
     }
 
-    @PutMapping("/payments")
-    fun confirmPayments(@RequestParam(name = "payments") payments: String) {
+    @PutMapping("/payments/confirm")
+    fun confirmPayments(@RequestBody payments_ids: ConfirmRequest): String {
+        val objectMapper = ObjectMapper()
+        val paymentIdsJson = objectMapper.writeValueAsString(payments_ids)
+
         val requestBuilder = HttpRequest.newBuilder()
-            .PUT(HttpRequest.BodyPublishers.ofString(payments))
+            .PUT(HttpRequest.BodyPublishers.ofString(paymentIdsJson))
             .uri(URI.create("${paymentsUrl}/confirm"))
             .setHeader("Authorization", "Bearer ${NordeaAuthController(config).getAccessToken().access_token}")
             .setHeader("Content-Type", "application/json; charset=UTF-8")
@@ -92,5 +95,6 @@ class NordeaSepaPaymentService(private val config: Config) {
         val request = NordeaApiHeaders(config).setTo(requestBuilder).build()
         val r = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
         logger.log(Level.INFO, r.body())
+        return r.body()
     }
 }
