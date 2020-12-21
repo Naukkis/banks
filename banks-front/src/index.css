@@ -3,6 +3,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
+    background-color: #d2e3f3;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -12,7 +13,22 @@ code {
     monospace;
 }
 
+a.bank-selection:visited {
+  background-color: #ffffff;
+  text-decoration: none;
+}
+
+a.bank-selection:hover {
+  background-color: #f7f8f1da;
+  text-decoration: none;
+}
+
 .bank-main {
+  display: flex;
+  justify-content: center;
+}
+
+.navbar {
   display: flex;
   justify-content: center;
 }

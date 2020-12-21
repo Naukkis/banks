@@ -20,10 +20,12 @@ class NordeaApiSelection extends React.Component {
       .then(res => res.json())
       .then(
         (result) => {
-          this.setState({
-            isLoaded: true,
-            accounts: result.response.accounts
-          });
+          if (result.response) {
+            this.setState({
+              isLoaded: true,
+              accounts: result.response.accounts
+            });
+          }
         },
         (error) => {
           this.setState({
@@ -42,7 +44,7 @@ class NordeaApiSelection extends React.Component {
         <div className="bank-main">
           <h3>Nordea</h3>
         </div>
-        <div>
+        <div className="navbar">
           <Link to="/nordea/accounts">
             <p>Accounts</p>
           </Link>
@@ -62,7 +64,7 @@ class NordeaApiSelection extends React.Component {
             path="/nordea/accounts/:accountId"
             render={({ match }) => <Transactions match={match} />} />
           <Route exact path={"/nordea/payments"}>
-              <Payments/>
+            <Payments />
           </Route>
         </Switch>
 

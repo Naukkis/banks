@@ -7,22 +7,22 @@ import Spankki from './Spankki';
 
 import {
   BrowserRouter as Router,
-  Switch, Route
+  Switch, Route, Link
 } from "react-router-dom";
 
 
 function App() {
   return (
     <Router>
-        <div className="App">
-      <header className="App-header">
-        <p>
-         Banks-api
-        </p>
-      </header>
-    </div>
-  
-  <Switch>
+      <div className="App">
+        <header className="App-header">
+          <Link to="/">
+            <p>Banks-api</p>
+          </Link>
+        </header>
+      </div>
+
+      <Switch>
         <Route path="/osuuspankki">
           <Op />
         </Route>
@@ -33,7 +33,7 @@ function App() {
           <Spankki />
         </Route>
         <Route path="/">
-         <Main />
+          <Main />
         </Route>
       </Switch>
 

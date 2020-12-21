@@ -13,18 +13,18 @@ function Main() {
         <div className="Main">
             <Grid item xs={12}>
                 <Grid container justify="center" spacing={5} >
-                    <Link to="/osuuspankki">
-                        <Grid item xs={12} style={{ border: "1px solid grey"}}>
+                    <Link to="/osuuspankki" className="bank-selection">
+                        <Grid item xs={12} >
                             <img src={op} className="bank-logo" alt="logo-op" />
                         </Grid>
                     </Link>
-                    <Link to="/nordea">
-                        <Grid item xs={12} style={{ border: "1px solid grey"}}>
+                    <Link to="/nordea" className="bank-selection">
+                        <Grid item xs={12} >
                             <img src={nordea} className="bank-logo" alt="logo-nordea" />
                         </Grid>
                     </Link>
-                    <Link to="/spankki">
-                        <Grid item xs={12} style={{ border: "1px solid grey"}}>
+                    <Link to="/spankki" className="bank-selection">
+                        <Grid item xs={12} >
                             <img src={spankki} className="bank-logo" alt="logo-spankki" />
                         </Grid>
                     </Link>
