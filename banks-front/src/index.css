@@ -3,7 +3,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
-    background-color: #d2e3f3;
+    background-color: #CEEBEF;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -19,7 +19,7 @@ a.bank-selection:visited {
 }
 
 a.bank-selection:hover {
-  background-color: #f7f8f1da;
+  border: 1px solid #00B4EF;
   text-decoration: none;
 }
 
@@ -57,3 +57,18 @@ input[type=text] {
   display: block;
 }
 
+input[type=button], input[type=submit] {
+  background-color: #00B4EF;
+  color: rgba(255, 255, 255, 0.884);
+  margin: 3px 8px 0px 0px;
+  padding: 8px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  border: none;
+  cursor:pointer;
+}
+
+input[type=button]:hover, input[type=submit]:hover {
+  cursor:pointer;
+}

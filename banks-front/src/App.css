@@ -3,7 +3,7 @@
 }
 
 .App-header {
-  background-color: #1a2d3f;
+  background-color: #012d5cff;
   min-height: 10vh;
   display: flex;
   flex-direction: column;
@@ -18,8 +18,16 @@
   color: #61dafb;
 }
 
+a.App-header-link {
+  background-color: #012d5cff;
+}
+
+a.App-header-link:visited {
+  background-color: #012d5cff;
+}
+
 a:link, a:visited {
-  background-color: #2f8fe9;
+  background-color: #156db7ff;
   color: white;
   padding: 0px 25px;
   text-align: center;

@@ -16,7 +16,7 @@ function App() {
     <Router>
       <div className="App">
         <header className="App-header">
-          <Link to="/">
+          <Link to="/" className="App-header-link">
             <p>Banks-api</p>
           </Link>
         </header>
