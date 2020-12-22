@@ -97,4 +97,19 @@ class NordeaSepaPaymentService(private val config: Config) {
         logger.log(Level.INFO, r.body())
         return r.body()
     }
+
+    @DeleteMapping("payments/delete")
+    fun deletePayment(@RequestParam paymentId: String): String {
+        val requestBuilder = HttpRequest.newBuilder()
+            .DELETE()
+            .uri(URI.create("${paymentsUrl}/${paymentId}?only_next_occurrence=true"))
+            .setHeader("Authorization", "Bearer ${NordeaAuthController(config).getAccessToken().access_token}")
+            .setHeader("Content-Type", "application/json; charset=UTF-8")
+            .setHeader("Accept", "application/json")
+
+        val request = NordeaApiHeaders(config).setTo(requestBuilder).build()
+        val r = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
+        logger.log(Level.INFO, r.body())
+        return r.body()
+    }
 }

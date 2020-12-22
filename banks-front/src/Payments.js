@@ -110,10 +110,6 @@ class Payments extends React.Component {
                     </label>
                     <input type="submit" value="Create payment" />
                 </form>
-                <p>{this.state.amount}</p>
-                <p>{this.state.recipientName}</p>
-                <p>{this.state.recipientAccount}</p>
-                <p>{this.state.message}</p>
 
                 <h3>Payments</h3>
                 {this.state.payments &&
