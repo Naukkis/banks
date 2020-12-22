@@ -83,7 +83,7 @@ class OpAuthorizationHandler(private val config: Config) {
                 "grant_type", "client_credentials",
                 "scope", "accounts",
                 "client_id", config.opClientId,
-                "client_secret", config.opClientSecret)
+                "client_secret", config.opTppClientSecret)
         return HttpRequest.newBuilder()
                 .POST(createFormData(params))
                 .uri(URI.create(TPP_AUTHENTICATION_URL))

@@ -27,6 +27,10 @@ class Config {
     lateinit var opClientSecret: String
     @Value("\${op.tpp_id}")
     lateinit var opTppId: String
+    @Value("\${op.unique_client_identifier}")
+    lateinit var opUuid: String
+    @Value("\${op.tpp_client_secret}")
+    lateinit var opTppClientSecret: String
     @Value("\${op.tppCert}")
     lateinit var opTppCert: String
     @Value("\${op.tppCertPassword}")

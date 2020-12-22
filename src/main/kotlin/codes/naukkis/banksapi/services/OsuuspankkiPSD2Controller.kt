@@ -59,12 +59,10 @@ class OsuuspankkiPSD2Controller(private val config: Config) {
     }
 
     fun buildAuthorizationRequestUrl(jwt: String): String {
-        return "$requestAuthorizationUrl?request=${jwt}" +
+        return "${requestAuthorizationUrl}?request=${jwt}" +
                 "&response_type=code" +
                 "&client_id=" + config.opClientId +
-                "&scope=openid%20accounts" +
-                "&redirect_uri=" + config.opRedirectUrlEncoded +
-                "&state=1122-234"
+                "&scope=openid%20accounts"
     }
 
 }
