@@ -7,10 +7,7 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import khttp.get
-import org.springframework.web.bind.annotation.CrossOrigin
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.view.RedirectView
 import java.net.URI
 import java.net.http.HttpClient
@@ -19,7 +16,8 @@ import java.net.http.HttpResponse
 
 @CrossOrigin(origins = ["http://localhost:3000"])
 @RestController
-class OsuuspankkiAccountController(private val config: Config) {
+@RequestMapping("/op")
+class OsuuspankkiAccountService(private val config: Config) {
     private val opUrlAccounts = "https://sandbox.apis.op-palvelut.fi/accounts/v3/accounts"
     private val headers = mapOf("Accept" to "application/json",
             "Content-Type" to "application/json",
@@ -29,22 +27,6 @@ class OsuuspankkiAccountController(private val config: Config) {
 
     private val httpClient: HttpClient = HttpClientProvider(config, Bank.OSUUSPANKKI).httpClient
 
-    @GetMapping("/authflow")
-    fun authFlow(): RedirectView? {
-        val jwt = JwtGenerator(config).createJwtUsingStaticParams()
-        val authUrl = buildAuthorizationRequestUrl(jwt)
-        return RedirectView(authUrl)
-    }
-
-    fun buildAuthorizationRequestUrl(jwt: String): String {
-        return "https://sandbox.apis.op-palvelut.fi/oauth/v1/authorize?request=${jwt}" +
-                "&response_type=code" +
-                "&client_id=" + config.opApiKey +
-                "&scope=openid%20accounts%20accounts%3Atransactions" +
-                "&redirect_uri=" + config.opRedirectUrlEncoded +
-                "&state=1122-234"
-    }
-
     @GetMapping("/accounts")
     fun accounts(@RequestParam accountId: String): ByteArray {
         val r = get("${opUrlAccounts}${accountId}",
@@ -53,9 +35,8 @@ class OsuuspankkiAccountController(private val config: Config) {
         return r.content
     }
 
-    @GetMapping("/accountsall")
+    @GetMapping("/accounts/all")
     fun accountsAll(): String {
-        val testaddress = "http://0.0.0.0:80/get"
         val basicHttpRequest = basicHttpRequest(opUrlAccounts)
         val response = httpClient.send(basicHttpRequest, HttpResponse.BodyHandlers.ofString())
         println(response.statusCode())
@@ -64,8 +45,8 @@ class OsuuspankkiAccountController(private val config: Config) {
         return response.body()
     }
 
-    @GetMapping("/accounts/transactions")
-    fun transactions(@RequestParam accountId: String): ByteArray {
+    @GetMapping("/accounts/{accountId}/transactions")
+    fun transactions(@PathVariable accountId: String): ByteArray {
         val r = get("${opUrlAccounts}/${accountId}/transactions",
                 headers = headers)
 

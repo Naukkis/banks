@@ -57,8 +57,8 @@ class OpAuthorizationHandler(private val config: Config) {
     private fun getRegisterRequest(accessToken: String?): HttpRequest {
         val params = java.util.Map.of(
                 "expires", LocalDateTime.now().plusDays(1L).toString() + "Z",
-                "transactionFrom", "2020-11-22",
-                "transactionTo", "2020-11-24"
+                "transactionFrom", "2020-11-20",
+                "transactionTo", "2020-12-22"
         )
         val objectMapper = ObjectMapper()
         var requestBody: String? = ""

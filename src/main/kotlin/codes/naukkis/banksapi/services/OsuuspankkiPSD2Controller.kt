@@ -58,11 +58,29 @@ class OsuuspankkiPSD2Controller(private val config: Config) {
         return RedirectView(url)
     }
 
+    @GetMapping("/opstaticauth")
+    fun startStaticAuthorizationFlow(): RedirectView? {
+        val jwt = JwtGenerator(config).createJwtUsingStaticParams()
+        val url = buildStaticAuthorizationRequestUrl(jwt)
+
+        println(jwt)
+        return RedirectView(url)
+    }
+
+    private fun buildStaticAuthorizationRequestUrl(jwt: String): String {
+        return "https://sandbox.apis.op-palvelut.fi/oauth/v1/authorize?request=${jwt}" +
+                "&response_type=code" +
+                "&client_id=" + config.opApiKey +
+                "&scope=openid%20accounts%20accounts%3Atransactions" +
+                "&state=1122234" +
+                "&redirect_uri=${config.opRedirectUrlEncoded}"
+    }
+
     fun buildAuthorizationRequestUrl(jwt: String): String {
         return "${requestAuthorizationUrl}?request=${jwt}" +
                 "&response_type=code" +
                 "&client_id=" + config.opClientId +
-                "&scope=openid%20accounts"
+                "&scope=openid%20accounts";
     }
 
 }

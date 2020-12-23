@@ -58,4 +58,9 @@ class Config {
     lateinit var spankkiClientId: String
     @Value("\${spankki.apiKey}")
     lateinit var spankkiApiKey: String
+
+    @Value("\${handelsbanken.apiKey}")
+    lateinit var handelsbankenApiKey: String
+    @Value("\${handelsbanken.staticConsentId}")
+    lateinit var handelsbankenStaticConsentId: String
 }
