@@ -23,7 +23,7 @@ function App() {
       </div>
 
       <Switch>
-        <Route path="/osuuspankki">
+        <Route path="/op">
           <Op />
         </Route>
         <Route path="/nordea">

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Switch, Route, Link } from "react-router-dom";
-import AccountListing from "./AccountListing";
+import NordeaAccountListing from "./NordeaAccountListing";
 import Transactions from './Transactions'
 import Payments from './Payments'
 
@@ -13,7 +13,6 @@ class NordeaApiSelection extends React.Component {
       accounts: []
     };
   }
-
 
   componentDidMount() {
     fetch("https://localhost:8443/nordea/accounts/all")
@@ -58,7 +57,7 @@ class NordeaApiSelection extends React.Component {
 
         <Switch>
           <Route exact path={"/nordea/accounts"}>
-            <AccountListing accounts={this.state.accounts} />
+            <NordeaAccountListing accounts={this.state.accounts} />
           </Route>
           <Route
             path="/nordea/accounts/:accountId"

@@ -1,6 +1,8 @@
 import React from 'react';
-import { Link } from "react-router-dom";
-import AccountListing from "./AccountListing";
+import { Switch, Route, Link } from "react-router-dom";
+import OpAccountListing from "./OpAccountListing";
+import OpTransactions from './OpTransactions'
+import Payments from './Payments'
 
 class OpApiSelection extends React.Component {
     constructor() {
@@ -8,19 +10,21 @@ class OpApiSelection extends React.Component {
         this.state = {
             error: null,
             isLoaded: false,
-            items: []
+            accounts: []
         };
     }
 
     componentDidMount() {
-        fetch("https://localhost:8443/accountsall")
+        fetch("https://localhost:8443/op/accounts/all")
             .then(res => res.json())
             .then(
                 (result) => {
-                    this.setState({
-                        isLoaded: true,
-                        items: result.items
-                    });
+                    if (result.accounts) {
+                        this.setState({
+                            isLoaded: true,
+                            accounts: result.accounts
+                        });
+                    }
                 },
                 (error) => {
                     this.setState({
@@ -29,23 +33,41 @@ class OpApiSelection extends React.Component {
                     });
                 }
             )
-  }
+    }
 
 
     render() {
+
         return (
             <div>
                 <div className="bank-main">
                     <h3>Osuuspankki</h3>
                 </div>
-                <div>
+                <div className="navbar">
                     <Link to="/op/accounts">
-                        <AccountListing accounts={this.state.items}/>
+                        <p>Accounts</p>
                     </Link>
                     <Link to="/op/cards">
                         <p>Cards</p>
                     </Link>
+                    <Link to="/op/payments">
+                        <p>Payments</p>
+                    </Link>
                 </div>
+
+
+                <Switch>
+                    <Route exact path={"/op/accounts"}>
+                        <OpAccountListing accounts={this.state.accounts} />
+                    </Route>
+                    <Route
+                        path="/op/accounts/:accountId"
+                        render={({ match }) => <OpTransactions match={match} />} />
+                    <Route exact path={"/op/payments"}>
+                        <Payments />
+                    </Route>
+                </Switch>
+
             </div>
         );
     }

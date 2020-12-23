@@ -13,7 +13,7 @@ function Main() {
         <div className="Main">
             <Grid item xs={12}>
                 <Grid container justify="center" spacing={5} >
-                    <Link to="/osuuspankki" className="bank-selection">
+                    <Link to="/op" className="bank-selection">
                         <Grid item xs={12} >
                             <img src={op} className="bank-logo" alt="logo-op" />
                         </Grid>

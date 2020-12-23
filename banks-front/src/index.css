@@ -13,6 +13,11 @@ code {
     monospace;
 }
 
+a.bank-selection {
+  background-color: #ffffff;
+  text-decoration: none;
+}
+
 a.bank-selection:visited {
   background-color: #ffffff;
   text-decoration: none;
