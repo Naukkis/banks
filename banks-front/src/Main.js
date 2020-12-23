@@ -1,8 +1,8 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import op from './img/logos/op.jpg';
-import nordea from './img/logos/nordea.gif';
-import spankki from './img/logos/s-pankki.png';
+import op from './img/logos/osuuspankki.png';
+import nordea from './img/logos/nordea.png';
+import handelsbanken from './img/logos/handelsbanken.png';
 import './bank-logo.css'
 import { Link } from "react-router-dom";
 
@@ -23,9 +23,9 @@ function Main() {
                             <img src={nordea} className="bank-logo" alt="logo-nordea" />
                         </Grid>
                     </Link>
-                    <Link to="/spankki" className="bank-selection">
+                    <Link to="/handelsbanken" className="bank-selection">
                         <Grid item xs={12} >
-                            <img src={spankki} className="bank-logo" alt="logo-spankki" />
+                            <img src={handelsbanken} className="bank-logo" alt="logo-handelsbanken" />
                         </Grid>
                     </Link>
                 </Grid>

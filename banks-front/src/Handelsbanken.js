@@ -1,12 +1,12 @@
 import React from 'react';
 
-function Spankki() {
+function Handelsbanken() {
 
     return (
         <div className="bank-main">
-            <p>Spankki</p>
+            <p>Handelsbanken</p>
         </div>
     );
 }
 
-export default Spankki;
+export default Handelsbanken;

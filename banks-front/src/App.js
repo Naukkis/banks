@@ -3,7 +3,7 @@ import './App.css';
 import Main from './Main';
 import Op from './Op';
 import Nordea from './Nordea';
-import Spankki from './Spankki';
+import Handelsbanken from './Handelsbanken';
 
 import {
   BrowserRouter as Router,
@@ -29,8 +29,8 @@ function App() {
         <Route path="/nordea">
           <Nordea />
         </Route>
-        <Route path="/spankki">
-          <Spankki />
+        <Route path="/handelsbanken">
+          <Handelsbanken />
         </Route>
         <Route path="/">
           <Main />
