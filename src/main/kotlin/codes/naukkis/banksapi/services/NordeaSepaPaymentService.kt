@@ -27,7 +27,7 @@ class NordeaSepaPaymentService(private val config: Config) {
             .uri(URI.create(paymentsUrl))
             .setHeader("Authorization", "Bearer ${NordeaAuthController(config).getAccessToken().access_token}")
 
-        val request = NordeaApiHeaders(config).setTo(requestBuilder).build()
+        val request = NordeaApiHeaders(config).setToUnsigned(requestBuilder).build()
 
         val r = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
         logger.log(Level.INFO, "payments requested")
@@ -42,7 +42,7 @@ class NordeaSepaPaymentService(private val config: Config) {
             .uri(URI.create("${paymentsUrl}/${paymentId}"))
             .setHeader("Authorization", "Bearer ${NordeaAuthController(config).getAccessToken().access_token}")
 
-        val request = NordeaApiHeaders(config).setTo(requestBuilder).build()
+        val request = NordeaApiHeaders(config).setToUnsigned(requestBuilder).build()
 
         val r = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
         logger.log(Level.INFO, "payments requested")
@@ -74,10 +74,10 @@ class NordeaSepaPaymentService(private val config: Config) {
             .setHeader("Content-Type", "application/json; charset=UTF-8")
             .setHeader("Accept", "application/json")
 
-        val request = NordeaApiHeaders(config).setTo(requestBuilder).build()
+        val request = NordeaApiHeaders(config).setToUnsigned(requestBuilder).build()
         val r = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
         logger.log(Level.INFO, r.body())
-        return r.body();
+        return r.body()
     }
 
     @PutMapping("/payments/confirm")
@@ -92,7 +92,7 @@ class NordeaSepaPaymentService(private val config: Config) {
             .setHeader("Content-Type", "application/json; charset=UTF-8")
             .setHeader("Accept", "application/json")
 
-        val request = NordeaApiHeaders(config).setTo(requestBuilder).build()
+        val request = NordeaApiHeaders(config).setToUnsigned(requestBuilder).build()
         val r = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
         logger.log(Level.INFO, r.body())
         return r.body()
@@ -107,7 +107,7 @@ class NordeaSepaPaymentService(private val config: Config) {
             .setHeader("Content-Type", "application/json; charset=UTF-8")
             .setHeader("Accept", "application/json")
 
-        val request = NordeaApiHeaders(config).setTo(requestBuilder).build()
+        val request = NordeaApiHeaders(config).setToUnsigned(requestBuilder).build()
         val r = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
         logger.log(Level.INFO, r.body())
         return r.body()

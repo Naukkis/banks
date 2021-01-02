@@ -27,7 +27,7 @@ class NordeaAccountService(private val config: Config) {
             .uri(URI.create("https://api.nordeaopenbanking.com/personal/v4/accounts"))
             .setHeader("Authorization", "Bearer ${NordeaAuthController(config).getAccessToken().access_token}")
 
-        val request = NordeaApiHeaders(config).setTo(requestBuilder).build()
+        val request = NordeaApiHeaders(config).setToUnsigned(requestBuilder).build()
 
         val r = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
         logger.log(Level.INFO, "accounts requested")
@@ -41,7 +41,7 @@ class NordeaAccountService(private val config: Config) {
             .uri(URI.create("https://api.nordeaopenbanking.com/personal/v4/accounts/${accountId}"))
             .setHeader("Authorization", "Bearer ${NordeaAuthController(config).getAccessToken().access_token}")
 
-        val request = NordeaApiHeaders(config).setTo(requestBuilder).build()
+        val request = NordeaApiHeaders(config).setToUnsigned(requestBuilder).build()
 
         val r = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
         logger.log(Level.INFO, "account $accountId requested")
@@ -55,11 +55,21 @@ class NordeaAccountService(private val config: Config) {
             .uri(URI.create("https://api.nordeaopenbanking.com/personal/v4/accounts/${accountId}/transactions"))
             .setHeader("Authorization", "Bearer ${NordeaAuthController(config).getAccessToken().access_token}")
 
-        val request = NordeaApiHeaders(config).setTo(requestBuilder).build()
+        val request = NordeaApiHeaders(config).setToUnsigned(requestBuilder).build()
 
         val r = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
         logger.log(Level.INFO, "transactions for account $accountId requested")
         return r.body()
     }
 
+
+    @GetMapping("/nordea/withSignature/accounts/all", produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun signatures(): String {
+        val accounts = "https://api.nordeaopenbanking.com/personal/v4/accounts"
+        val request = NordeaApiHeaders(config).createGetRequest(URI.create(accounts))
+        logger.log(Level.INFO, request.headers().toString())
+        val r = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
+        logger.log(Level.INFO, "accounts requested")
+        return r.body()
+    }
 }

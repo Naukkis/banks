@@ -27,7 +27,7 @@ class NordeaCardService(private val config: Config) {
             .uri(URI.create("https://api.nordeaopenbanking.com/personal/v4/cards"))
             .setHeader("Authorization", "Bearer ${NordeaAuthController(config).getAccessToken().access_token}")
 
-        val request = NordeaApiHeaders(config).setTo(requestBuilder).build()
+        val request = NordeaApiHeaders(config).setToUnsigned(requestBuilder).build()
 
         val r = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
         logger.log(Level.INFO, "cards requested")
@@ -41,7 +41,7 @@ class NordeaCardService(private val config: Config) {
             .uri(URI.create("https://api.nordeaopenbanking.com/personal/v4/cards/${cardId}"))
             .setHeader("Authorization", "Bearer ${NordeaAuthController(config).getAccessToken().access_token}")
 
-        val request = NordeaApiHeaders(config).setTo(requestBuilder).build()
+        val request = NordeaApiHeaders(config).setToUnsigned(requestBuilder).build()
 
         val r = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
         logger.log(Level.INFO, "card $cardId requested")
@@ -55,7 +55,7 @@ class NordeaCardService(private val config: Config) {
             .uri(URI.create("https://api.nordeaopenbanking.com/personal/v4/cards/${cardId}/transactions"))
             .setHeader("Authorization", "Bearer ${NordeaAuthController(config).getAccessToken().access_token}")
 
-        val request = NordeaApiHeaders(config).setTo(requestBuilder).build()
+        val request = NordeaApiHeaders(config).setToUnsigned(requestBuilder).build()
 
         val r = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
         logger.log(Level.INFO, "transactions for card $cardId requested")
